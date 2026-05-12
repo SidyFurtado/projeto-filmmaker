@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Hub do Filmmaker — Gerador de Documentos profissionais para cineastas e produtores de vídeo." />
+  <title>Hub do Filmmaker: Gerador de Documentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Slab:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">Filmmaker<span class="logo-accent">Hub</span></span>
+      </div>
+      <nav class="header-nav" id="header-nav">
+        <a href="#" class="nav-link active" id="nav-dashboard">Dashboard</a>
+        <a href="#" class="nav-link">Meus Documentos</a>
+        <a href="#" class="nav-link">Configurações</a>
+      </nav>
+      <button class="hamburger" id="hamburger" aria-label="Abrir menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════
+       VIEW: DASHBOARD
+  ══════════════════════════════════ -->
+  <div id="view-dashboard" class="view view-active">
+
+    <main class="main-content">
+      <div class="orb orb-1" aria-hidden="true"></div>
+      <div class="orb orb-2" aria-hidden="true"></div>
+      <div class="orb orb-3" aria-hidden="true"></div>
+
+      <section class="hero-section">
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          Plataforma para Profissionais de Vídeo
+        </div>
+        <h1 class="hero-title">
+          Hub do Filmmaker:<br />
+          <span class="title-gradient">Gerador de Documentos</span>
+        </h1>
+        <p class="hero-subtitle">
+          Crie orçamentos, propostas e contratos profissionais em minutos.<br />
+          Feito por quem entende da produção audiovisual.
+        </p>
+      </section>
+
+      <section class="cards-section" aria-label="Ferramentas principais">
+        <div class="cards-grid">
+
+          <!-- CARD 1 — Orçamento -->
+          <article class="doc-card" id="card-orcamento" tabindex="0" role="button" data-doc="orcamento"
+            aria-label="Criar Orçamento">
+            <div class="card-glow glow-cyan"></div>
+            <div class="card-inner">
+              <div class="card-icon-wrap icon-cyan">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" />
+                  <path d="M8 21h8M12 17v4" />
+                  <path d="M7 10h2l1 3 2-6 1 3h2" />
+                </svg>
+              </div>
+              <div class="card-text">
+                <span class="card-category">Financeiro</span>
+                <h2 class="card-title">Criar Orçamento</h2>
+                <p class="card-desc">Gere orçamentos detalhados com itens de produção, diárias, equipamentos e
+                  pós-produção. Exporte em PDF pronto para envio.</p>
+              </div>
+              <ul class="card-features">
+                <li><span class="feat-dot dot-cyan"></span>Itens personalizáveis</li>
+                <li><span class="feat-dot dot-cyan"></span>Cálculo automático</li>
+                <li><span class="feat-dot dot-cyan"></span>Exportação em PDF</li>
+              </ul>
+              <button class="card-btn btn-cyan" id="btn-orcamento">
+                <span>Criar Orçamento</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            <div class="card-shine" aria-hidden="true"></div>
+          </article>
+
+          <!-- CARD 2 — Proposta -->
+          <article class="doc-card card-featured" id="card-proposta" tabindex="0" role="button" data-doc="proposta"
+            aria-label="Criar Proposta Comercial">
+            <div class="card-glow glow-purple"></div>
+            <div class="featured-badge">⭐ Popular</div>
+            <div class="card-inner">
+              <div class="card-icon-wrap icon-purple">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+              </div>
+              <div class="card-text">
+                <span class="card-category">Comercial</span>
+                <h2 class="card-title">Criar Proposta Comercial</h2>
+                <p class="card-desc">Monte propostas completas com apresentação, escopo, cronograma e valores.
+                  Impressione seus clientes.</p>
+              </div>
+              <ul class="card-features">
+                <li><span class="feat-dot dot-purple"></span>Templates personalizados</li>
+                <li><span class="feat-dot dot-purple"></span>Cronograma integrado</li>
+                <li><span class="feat-dot dot-purple"></span>Assinatura digital</li>
+              </ul>
+              <button class="card-btn btn-purple" id="btn-proposta">
+                <span>Criar Proposta</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            <div class="card-shine" aria-hidden="true"></div>
+          </article>
+
+          <!-- CARD 3 — Contrato -->
+          <article class="doc-card" id="card-contrato" tabindex="0" role="button" data-doc="contrato"
+            aria-label="Gerar Contrato de Prestação de Serviços">
+            <div class="card-glow glow-orange"></div>
+            <div class="card-inner">
+              <div class="card-icon-wrap icon-orange">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 11l3 3L22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+              </div>
+              <div class="card-text">
+                <span class="card-category">Jurídico</span>
+                <h2 class="card-title">Gerar Contrato de Prestação de Serviços</h2>
+                <p class="card-desc">Crie contratos com cláusulas específicas para produção audiovisual: direitos de
+                  imagem, entregas e pagamentos.</p>
+              </div>
+              <ul class="card-features">
+                <li><span class="feat-dot dot-orange"></span>Cláusulas audiovisuais</li>
+                <li><span class="feat-dot dot-orange"></span>Direitos de imagem</li>
+                <li><span class="feat-dot dot-orange"></span>Modelo jurídico válido</li>
+              </ul>
+              <button class="card-btn btn-orange" id="btn-contrato">
+                <span>Gerar Contrato</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            <div class="card-shine" aria-hidden="true"></div>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="stats-bar" aria-label="Estatísticas">
+        <div class="stat-item">
+          <span class="stat-number" data-target="1200">0</span>
+          <span class="stat-label">Documentos Gerados</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="340">0</span>
+          <span class="stat-label">Filmmakers Ativos</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number" data-target="98">0</span>
+          <span class="stat-label">% de Satisfação</span>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Feito com <span class="heart">♥</span> para a comunidade audiovisual · <span id="year"></span></p>
+    </footer>
+
+  </div><!-- /view-dashboard -->
+
+  <!-- ══════════════════════════════════
+       VIEW: FORM
+  ══════════════════════════════════ -->
+  <div id="view-form" class="view" aria-hidden="true">
+
+    <!-- Breadcrumb / Top bar -->
+    <div class="form-topbar">
+      <button class="back-btn" id="back-btn" aria-label="Voltar ao Dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 5l-7 7 7 7" />
+        </svg>
+        Voltar ao Dashboard
+      </button>
+      <div class="form-topbar-title">
+        <span id="form-doc-icon">💰</span>
+        <span id="form-doc-title">Criar Orçamento</span>
+      </div>
+      <div class="form-topbar-step">Etapa 1 de 2 — Briefing</div>
+    </div>
+
+    <!-- Two-column layout -->
+    <div class="form-layout">
+
+      <!-- ── LEFT: scrollable form ── -->
+      <div class="form-col-left" id="form-col-left">
+
+        <!-- SECTION: Identidade -->
+        <div class="form-section">
+          <div class="form-section-hd">
+            <span class="fs-icon">🎨</span>
+            <div>
+              <div class="fs-title">Identidade do Filmmaker</div>
+              <div class="fs-sub">Personalize o visual do documento</div>
+            </div>
+          </div>
+
+          <!-- Logo upload -->
+          <div class="field-group">
+            <label class="field-label">Logo da Produtora</label>
+            <div class="logo-drop-zone" id="logo-drop-zone" tabindex="0" role="button"
+              aria-label="Clique ou arraste para upload de logo">
+              <input type="file" id="logo-input" accept="image/*" hidden />
+              <div class="logo-drop-inner" id="logo-drop-inner">
+                <span class="logo-drop-icon">📁</span>
+                <span class="logo-drop-text">Clique ou arraste a logo aqui</span>
+                <span class="logo-drop-hint">PNG, JPG, SVG — máx 5 MB</span>
+              </div>
+              <img id="logo-preview-img" src="" alt="Preview da logo" class="logo-preview-img" hidden />
+              <button class="logo-remove-btn" id="logo-remove-btn" hidden aria-label="Remover logo">✕</button>
+            </div>
+          </div>
+
+          <!-- Color picker -->
+          <div class="field-group">
+            <label class="field-label" for="color-picker">Cor Primária do Documento</label>
+            <div class="color-row">
+              <input type="color" id="color-picker" value="#00e5ff" class="native-color-picker" />
+              <input type="text" id="color-hex-input" class="form-input hex-input" value="#00e5ff" maxlength="7"
+                spellcheck="false" aria-label="Valor hexadecimal da cor" />
+            </div>
+            <div class="color-swatches">
+              <button class="swatch" data-color="#00e5ff" style="background:#00e5ff" title="Cyan neon"></button>
+              <button class="swatch" data-color="#c77dff" style="background:#c77dff" title="Roxo"></button>
+              <button class="swatch" data-color="#ff9f43" style="background:#ff9f43" title="Laranja"></button>
+              <button class="swatch" data-color="#2ecc71" style="background:#2ecc71" title="Verde"></button>
+              <button class="swatch" data-color="#e74c3c" style="background:#e74c3c" title="Vermelho"></button>
+              <button class="swatch" data-color="#f1c40f" style="background:#f1c40f" title="Amarelo"></button>
+              <button class="swatch" data-color="#1abc9c" style="background:#1abc9c" title="Teal"></button>
+              <button class="swatch" data-color="#3498db" style="background:#3498db" title="Azul"></button>
+            </div>
+          </div>
+        </div><!-- /section identidade -->
+
+        <!-- SECTION: Dynamic per doc type — injected by app.js -->
+        <div id="doc-form-body"></div>
+
+        <!-- Form actions -->
+        <div class="form-actions">
+          <button class="btn-back-sm" id="back-btn-2">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+            Voltar
+          </button>
+          <button class="btn-generate" id="btn-generate">
+            <span>Gerar Documento</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </button>
+        </div>
+
+      </div><!-- /form-col-left -->
+
+      <!-- ── RIGHT: sticky A4 preview ── -->
+      <div class="form-col-right">
+        <div class="preview-topbar">
+          <span class="preview-topbar-label">Preview do Documento</span>
+          <div class="preview-topbar-actions">
+            <span class="preview-a4-chip">A4</span>
+            <button class="btn-export-pdf" id="btn-export-pdf" aria-label="Exportar PDF">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="7 10 12 15 17 10" />
+                <line x1="12" y1="15" x2="12" y2="3" />
+              </svg>
+              Exportar PDF
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-scroll-area">
+          <div class="a4-wrapper">
+            <div class="a4-sheet" id="a4-sheet" style="--doc-accent: #00e5ff;">
+
+              <!-- A4 Header -->
+              <div class="a4-header-top" id="a4-header-top">
+                <div class="a4-brand">
+                  <img id="a4-logo-img" src="" alt="" hidden />
+                  <span id="a4-logo-fallback" class="a4-logo-fallback">🎬 Filmmaker</span>
+                </div>
+                <div class="a4-doc-meta">
+                  <div class="a4-doc-type" id="a4-doc-type">ORÇAMENTO DE PRODUÇÃO</div>
+                  <div class="a4-doc-num">Nº 001 · <span id="a4-today"></span></div>
+                </div>
+              </div>
+
+              <!-- A4 Body -->
+              <div class="a4-body">
+
+                <div class="a4-section">
+                  <div class="a4-section-title" id="a4-st-1">DADOS DO PROJETO</div>
+                  <div class="a4-rows">
+                    <div class="a4-row"><span class="a4-lbl">Cliente</span><span class="a4-val" id="pv-client">—</span>
+                    </div>
+                    <div class="a4-row"><span class="a4-lbl">Tipo de Projeto</span><span class="a4-val"
+                        id="pv-type">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Região de Captação</span><span class="a4-val"
+                        id="pv-region">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Porte do Cliente</span><span class="a4-val"
+                        id="pv-size">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Verba Estimada</span><span class="a4-val"
+                        id="pv-budget">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Estilo de Produção</span><span class="a4-val"
+                        id="pv-style">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Diárias de Captação</span><span class="a4-val"
+                        id="pv-days">—</span></div>
+                    <div class="a4-row"><span class="a4-lbl">Prazo de Entrega</span><span class="a4-val"
+                        id="pv-deadline">—</span></div>
+                  </div>
+                </div>
+
+                <div class="a4-section">
+                  <div class="a4-section-title" id="a4-st-2">PÓS-PRODUÇÃO</div>
+                  <div class="a4-post-text" id="pv-post">Detalhes a definir conforme briefing.</div>
+                </div>
+
+                <div class="a4-spacer"></div>
+
+                <div class="a4-signatures">
+                  <div class="a4-sig">
+                    <div class="a4-sig-line" id="a4-sig-1"></div>
+                    <div class="a4-sig-name">Prestador de Serviços</div>
+                  </div>
+                  <div class="a4-sig">
+                    <div class="a4-sig-line" id="a4-sig-2"></div>
+                    <div class="a4-sig-name">Contratante</div>
+                  </div>
+                </div>
+
+                <div class="a4-footer">
+                  <span>Filmmaker Studio | Contato Comercial</span>
+                  <span>PÁG 01</span>
+                </div>
+
+              </div><!-- /a4-body -->
+            </div><!-- /a4-sheet -->
+          </div><!-- /a4-wrapper -->
+        </div><!-- /preview-scroll-area -->
+      </div><!-- /form-col-right -->
+
+    </div><!-- /form-layout -->
+  </div><!-- /view-form -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>
