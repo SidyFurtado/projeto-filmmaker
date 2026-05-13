@@ -330,8 +330,241 @@ function renderDocForm(docKey) {
   }
 }
 
+/* ═══════════════════════════════════════════
+   FASE 3 — MOTOR DE INTELIGÊNCIA ARTIFICIAL
+═══════════════════════════════════════════ */
+
+function pv(fieldId, previewId, transform) {
+  const field = document.getElementById(fieldId);
+  const preview = document.getElementById(previewId);
+  if (!field || !preview) return;
+
+  const update = () => {
+    const raw = field.value.trim();
+    let val = raw || '—';
+    if (transform) val = raw ? transform(raw) : '—';
+    preview.textContent = val;
+  };
+  field.addEventListener('input', update);
+  field.addEventListener('change', update);
+}
+
+pv('f-client', 'pv-client');
+pv('f-type', 'pv-type');
+pv('f-region', 'pv-region');
+pv('f-size', 'pv-size');
+pv('f-budget', 'pv-budget');
+pv('f-style', 'pv-style');
+pv('f-days', 'pv-days', v => `${v} diária${v == 1 ? '' : 's'}`);
+pv('f-post', 'pv-post');
+pv('f-deadline', 'pv-deadline', v => {
+  try {
+    const [yr, mo, dy] = v.split('-');
+    return new Date(yr, mo - 1, dy).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  } catch { return v; }
+});
+
+/* ═══════════════════════════════════════════
+   FASE 3 — MOTOR DE INTELIGÊNCIA ARTIFICIAL
+═══════════════════════════════════════════ */
+
+/* ── Toast helper ── */
+let toastWrap = null;
+function showToast(msg, type = 'info', duration = 4000) {
+  if (!toastWrap) {
+    toastWrap = document.createElement('div');
+    toastWrap.className = 'toast-wrap';
+    document.body.appendChild(toastWrap);
+  }
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  toastWrap.appendChild(t);
+  setTimeout(() => t.remove(), duration);
+}
+
+/* ── Preview UI helpers ── */
+function showPreviewLoading() {
+  const area = document.querySelector('.preview-scroll-area');
+  if (area) {
+    area.innerHTML = `
+      <div class="ai-loading">
+        <div class="ai-spinner"></div>
+        <div class="ai-loading-title">Gerando com Gemini…</div>
+        <div class="ai-loading-sub">A IA está redigindo seu documento profissional</div>
+      </div>`;
+  }
+}
+
+function showPreviewError(message) {
+  const area = document.querySelector('.preview-scroll-area');
+  if (area) {
+    area.innerHTML = `
+      <div class="ai-error">
+        <div class="ai-error-icon">⚠️</div>
+        <div class="ai-error-title">Erro na geração</div>
+        <div class="ai-error-msg">${message}</div>
+        <button class="ai-error-retry" onclick="gerarDocumentoAudiovisual(event)">Tentar novamente</button>
+      </div>`;
+  }
+}
+
+/* ── Gemini API call ── */
+async function callGeminiAPI(prompt) {
+  // TODO: INSERIR API KEY AQUI
+  const API_KEY = 'AIzaSyBK8NrCB9TyCq4FCN4lavPrNf0dvSTMGZc';
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+  if (!API_KEY) {
+    throw new Error('API Key não configurada. Abra app.js, localize "TODO: INSERIR API KEY AQUI" e insira sua chave gratuita do Google AI Studio.');
+  }
+
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { temperature: 0.75, maxOutputTokens: 4096 },
+    }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `Erro HTTP ${res.status}`);
+  }
+
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error('Resposta vazia da IA. Tente novamente.');
+
+  // Strip markdown fences if model included them
+  return text.replace(/^```html\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/i, '').trim();
+}
+
+/* ── Render AI result into preview ── */
+function renderAIResult(html, { accentColor, logoSrc, hasLogo }) {
+  const area = document.querySelector('.preview-scroll-area');
+  if (!area) return;
+  // Criar div #preview-documento que não possui CSS restritivo
+  area.innerHTML = `
+    <div class="a4-wrapper">
+      <div id="preview-documento" style="width: 595px; min-height: 842px; background: #fff; box-shadow: 0 12px 60px rgba(0, 0, 0, .6); margin: 0 auto; overflow: hidden; position: relative;">
+        ${html}
+      </div>
+    </div>
+  `;
+}
+
+/* ── Contract base template ── */
+const CONTRATO_TEMPLATE_BASE = `
+<h2>CONTRATO DE PRESTAÇÃO DE SERVIÇOS AUDIOVISUAIS</h2>
+
+<div class="contrato-parties">
+  <div class="party-box">
+    <h4>CONTRATADO</h4>
+    <p><strong>[NOME DO PRESTADOR]</strong><br>CPF/CNPJ: [CPF/CNPJ]<br>Endereço: [ENDEREÇO]</p>
+  </div>
+  <div class="party-box">
+    <h4>CONTRATANTE</h4>
+    <p><strong>[NOME DO CONTRATANTE]</strong><br>CPF/CNPJ: [CPF/CNPJ]<br>Endereço: [ENDEREÇO]</p>
+  </div>
+</div>
+
+<h3>CLÁUSULA 1ª — OBJETO</h3>
+<p>Prestação de serviços audiovisuais conforme ANEXO I — ESCOPO DE SERVIÇOS.</p>
+<h3>CLÁUSULA 2ª — PRAZO</h3>
+<p>De [DATA DE INÍCIO] a [DATA DE ENTREGA], prorrogável mediante acordo escrito.</p>
+<h3>CLÁUSULA 3ª — REMUNERAÇÃO</h3>
+<p>Valor total: R$ [VALOR TOTAL]. Pagamento: 50% na assinatura + 50% na entrega aprovada.</p>
+<h3>CLÁUSULA 4ª — REVISÕES</h3>
+<p>Incluídas <strong>2 (duas) rodadas de revisão</strong>. Revisões adicionais: R$ [VALOR/REVISÃO] cada, via nova OS.</p>
+<h3>CLÁUSULA 5ª — ARQUIVOS BRUTOS</h3>
+<p>O footage bruto é de propriedade exclusiva do CONTRATADO e não será entregue, salvo negociação específica.</p>
+<h3>CLÁUSULA 6ª — CANCELAMENTO E MULTA</h3>
+<ul>
+  <li>Mais de 15 dias de antecedência: perda do sinal (50%).</li>
+  <li>Menos de 15 dias: 100% do valor contratado.</li>
+  <li>Cancelamento no dia: 100% + 20% de multa.</li>
+</ul>
+<h3>CLÁUSULA 7ª — DIREITOS AUTORAIS E DE IMAGEM</h3>
+<p>O CONTRATADO cede os direitos de uso do material para os fins do ANEXO I. Uso em mídias não previstas exige nova negociação.</p>
+<h3>CLÁUSULA 8ª — PROPRIEDADE INTELECTUAL</h3>
+<p>Conceito criativo, roteiro e trilha autoral permanecem como propriedade intelectual do CONTRATADO.</p>
+<h3>CLÁUSULA 9ª — FORO</h3>
+<p>Eleito o foro de [CIDADE/ESTADO]. Regido pela legislação brasileira.</p>
+<h3>ANEXO I — ESCOPO DE SERVIÇOS</h3>
+<p>[ESCOPO DETALHADO A SER PREENCHIDO PELA IA COM BASE NO BRIEFING]</p>
+<p style="margin-top:32px">Local e data: [CIDADE], _____ de _____________ de _________.</p>
+<p style="margin-top:24px">_______________________________<br><strong>CONTRATADO</strong></p>
+<p style="margin-top:20px">_______________________________<br><strong>CONTRATANTE</strong></p>`;
+
+/* ── Prompt builders ── */
+function buildPromptOrcamento(b, accentColor, logoSrc, hasLogo) {
+  const itemsText = b.items.map((it, i) => `${i + 1}. ${it.desc}: R$ ${it.valor || '[ ________ ]'}`).join('\n');
+  const total = b.items.reduce((s, it) => {
+    const n = parseFloat(String(it.valor).replace(/[^\d,]/g, '').replace(',', '.'));
+    return s + (isNaN(n) ? 0 : n);
+  }, 0);
+  const totalFmt = total > 0 ? `R$ ${total.toFixed(2).replace('.', ',')}` : '[ ________ ]';
+  const tone = total < 1500 ? 'Tom direto, simples e amigável, sem burocracia.' : 'Tom executivo, formal e preciso.';
+  return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Gerente Financeiro especializado em produção audiovisual.
+  
+REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
+
+REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
+
+CLIENTE: ${b.client} | PAGAMENTO: ${b.pagamento} | VALIDADE: ${b.validade}
+ITENS FORNECIDOS:
+${itemsText}
+TOTAL CALCULADO: ${totalFmt}
+CONTEXTO: ${tone}
+
+TAREFA: Redija e faça o design de um orçamento profissional de produção audiovisual.
+Retorne APENAS HTML limpo (sem tags <html>, <head> ou <body> externas, apenas o conteúdo interno), com estilos inline exuberantes e modernos.`;
+}
+
+function buildPromptProposta(b, accentColor, logoSrc, hasLogo) {
+  return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Diretor Criativo especializado em produção audiovisual.
+  
+REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. Crie uma 'Capa' ocupando a primeira página com a logo centralizada e o título em destaque. ${hasLogo ? `URL DA LOGO: ${logoSrc}` : ''}
+
+REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
+
+CLIENTE: ${b.client}
+OBJETIVO DO VÍDEO: ${b.objetivo}
+PÚBLICO-ALVO: ${b.publico}
+REFERÊNCIAS CRIATIVAS: ${b.referencias || 'Não informadas'}
+DIFERENCIAL DO FILMMAKER: ${b.porqueeu}
+
+TAREFA: Crie uma Proposta Comercial em formato Pitch Deck focada em CONVERSÃO, com design visual impressionante.
+Retorne APENAS HTML limpo (sem tags <html>, <head> ou <body> externas, apenas o conteúdo interno), com estilos inline.`;
+}
+
+function buildPromptContrato(b, accentColor, logoSrc, hasLogo) {
+  const valorNum = parseFloat(String(b.valor).replace(/[^\d,]/g, '').replace(',', '.'));
+  const tone = valorNum > 5000 ? 'Linguagem jurídica estritamente formal e executiva.' : 'Linguagem jurídica clara e acessível.';
+  return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Advogado especialista em Direitos Autorais no Brasil.
+  
+REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
+
+REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
+
+TEMPLATE JURÍDICO BASE (Reescreva com design incrível):
+${CONTRATO_TEMPLATE_BASE}
+
+DADOS:
+PRESTADOR: ${b.prestNome} | CPF/CNPJ: ${b.prestCpf} | Endereço: ${b.prestEnd}
+CONTRATANTE: ${b.contNome} | CPF/CNPJ: ${b.contCpf} | Endereço: ${b.contEnd}
+OBJETO: ${b.servico} | VALOR: R$ ${b.valor} | INÍCIO: ${b.inicio} | ENTREGA: ${b.entrega} | FORO: ${b.foro}
+TOM: ${tone}
+
+TAREFA: Preencha TODAS as variáveis e redija o ANEXO I — ESCOPO. Formate tudo como um documento com design moderno.
+Retorne APENAS HTML limpo (sem tags <html>, <head> ou <body> externas, apenas o conteúdo interno), com estilos inline.`;
+}
+
 /* ── Main AI function ── */
-async function gerarDocumentoAudiovisual() {
+async function gerarDocumentoAudiovisual(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
   const accentColor = document.getElementById('color-picker')?.value || '#00e5ff';
   const logoEl = document.getElementById('logo-preview-img');
   const hasLogo = logoEl && !logoEl.hidden && logoEl.src;
@@ -340,7 +573,7 @@ async function gerarDocumentoAudiovisual() {
 
   if (currentDoc === 'orcamento') {
     b = {
-      client: document.getElementById('o-client')?.value.trim(),
+      client: document.getElementById('o-client')?.value?.trim() || '',
       pagamento: document.getElementById('o-pagamento')?.value,
       validade: document.getElementById('o-validade')?.value,
       items: orcamentoItems.filter(it => it.desc.trim()),
@@ -351,28 +584,28 @@ async function gerarDocumentoAudiovisual() {
 
   } else if (currentDoc === 'proposta') {
     b = {
-      client: document.getElementById('p-client')?.value.trim(),
-      objetivo: document.getElementById('p-objetivo')?.value.trim(),
-      publico: document.getElementById('p-publico')?.value.trim(),
-      referencias: document.getElementById('p-referencias')?.value.trim(),
-      porqueeu: document.getElementById('p-porqueeu')?.value.trim(),
+      client: document.getElementById('p-client')?.value?.trim() || '',
+      objetivo: document.getElementById('p-objetivo')?.value?.trim() || '',
+      publico: document.getElementById('p-publico')?.value?.trim() || '',
+      referencias: document.getElementById('p-referencias')?.value?.trim() || '',
+      porqueeu: document.getElementById('p-porqueeu')?.value?.trim() || '',
     };
     requiredIds = [['p-client', b.client], ['p-objetivo', b.objetivo], ['p-publico', b.publico], ['p-porqueeu', b.porqueeu]];
     prompt = buildPromptProposta(b, accentColor, logoSrc, hasLogo);
 
   } else {
     b = {
-      prestNome: document.getElementById('c-prest-nome')?.value.trim(),
-      prestCpf: document.getElementById('c-prest-cpf')?.value.trim(),
-      prestEnd: document.getElementById('c-prest-end')?.value.trim(),
-      contNome: document.getElementById('c-cont-nome')?.value.trim(),
-      contCpf: document.getElementById('c-cont-cpf')?.value.trim(),
-      contEnd: document.getElementById('c-cont-end')?.value.trim(),
-      servico: document.getElementById('c-servico')?.value.trim(),
-      valor: document.getElementById('c-valor')?.value.trim(),
+      prestNome: document.getElementById('c-prest-nome')?.value?.trim() || '',
+      prestCpf: document.getElementById('c-prest-cpf')?.value?.trim() || '',
+      prestEnd: document.getElementById('c-prest-end')?.value?.trim() || '',
+      contNome: document.getElementById('c-cont-nome')?.value?.trim() || '',
+      contCpf: document.getElementById('c-cont-cpf')?.value?.trim() || '',
+      contEnd: document.getElementById('c-cont-end')?.value?.trim() || '',
+      servico: document.getElementById('c-servico')?.value?.trim() || '',
+      valor: document.getElementById('c-valor')?.value?.trim() || '',
       inicio: document.getElementById('c-inicio')?.value,
       entrega: document.getElementById('c-entrega')?.value,
-      foro: document.getElementById('c-foro')?.value.trim(),
+      foro: document.getElementById('c-foro')?.value?.trim() || '',
     };
     requiredIds = [
       ['c-prest-nome', b.prestNome], ['c-prest-cpf', b.prestCpf], ['c-prest-end', b.prestEnd],
