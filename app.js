@@ -274,8 +274,34 @@ function renderDocForm(docKey) {
     orcamentoItems = [{ desc: '', valor: '' }];
     container.innerHTML = `
       <div class="form-section">
-        <div class="form-section-hd"><span class="fs-icon">💰</span><div><div class="fs-title">Detalhes do Orçamento</div><div class="fs-sub">Informe os itens e valores do serviço</div></div></div>
+        <div class="form-section-hd"><span class="fs-icon">🔍</span><div><div class="fs-title">Raio-X do Projeto</div><div class="fs-sub">Dados do Cliente e Localização</div></div></div>
         <div class="field-group"><label class="field-label" for="o-client">Nome do Cliente <span class="req">*</span></label><input type="text" id="o-client" class="form-input" placeholder="Ex: Loja do João / Empresa XYZ" /></div>
+        <div class="field-group"><label class="field-label" for="o-tamanho">Tamanho do Cliente</label>
+          <div class="select-wrap"><select id="o-tamanho" class="form-select"><option value="" disabled selected>Selecione…</option><option>Pequeno Comércio Local</option><option>Média Empresa</option><option>Grande Corporação/Indústria</option></select><span class="select-arrow">▾</span></div>
+        </div>
+        <div class="field-group" style="padding-bottom:20px"><label class="field-label" for="o-local">Local da Captação</label><input type="text" id="o-local" class="form-input" placeholder="Ex: Estado, Cidade ou Região" /></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-hd"><span class="fs-icon">🎬</span><div><div class="fs-title">Escopo da Produção</div><div class="fs-sub">Detalhes técnicos da gravação</div></div></div>
+        <div class="field-group"><label class="field-label" for="o-tipo">Tipo de Projeto</label>
+          <div class="select-wrap"><select id="o-tipo" class="form-select"><option value="" disabled selected>Selecione…</option><option>Vídeo Institucional</option><option>Cobertura de Evento</option><option>Comercial/Publicidade</option><option>Documentário</option><option>Outro</option></select><span class="select-arrow">▾</span></div>
+        </div>
+        <div class="field-group"><label class="field-label" for="o-diarias">Quantidade de Diárias de Gravação</label><input type="number" id="o-diarias" class="form-input" placeholder="Ex: 2" min="1" /></div>
+        <div class="field-group" style="padding-bottom:20px"><label class="field-label" for="o-estilo">Estilo de Produção / Equipamento</label>
+          <div class="select-wrap"><select id="o-estilo" class="form-select"><option value="" disabled selected>Selecione…</option><option>Setup enxuto / Run and Gun</option><option>Setup Médio</option><option>Cinema / Equipe Grande</option></select><span class="select-arrow">▾</span></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-hd"><span class="fs-icon">✂️</span><div><div class="fs-title">Pós-Produção e Prazos</div><div class="fs-sub">Edição, cor e entrega</div></div></div>
+        <div class="field-group"><label class="field-label" for="o-pos">Detalhes da Pós-Produção</label><textarea id="o-pos" class="form-textarea" rows="3" placeholder="Nível de motion, color grading, legendas, etc."></textarea></div>
+        <div class="field-group" style="padding-bottom:20px"><label class="field-label" for="o-prazo">Prazo de Entrega</label><input type="text" id="o-prazo" class="form-input" placeholder="Ex: 15 dias úteis ou DD/MM/AAAA" /></div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-hd"><span class="fs-icon">💵</span><div><div class="fs-title">Financeiro</div><div class="fs-sub">Valores e itens do serviço</div></div></div>
+        <div class="field-group"><label class="field-label" for="o-verba">Verba Estimada do Cliente</label><input type="text" id="o-verba" class="form-input" placeholder="Ex: R$ 5.000 ou deixe em branco se Não Informada" /></div>
         <div class="field-group"><label class="field-label">Itens do Serviço <span class="req">*</span></label>
           <div class="items-header"><span>Item / Descrição</span><span>Valor</span><span></span></div>
           <div id="itens-lista"></div>
@@ -413,7 +439,7 @@ function showPreviewError(message) {
 async function callGeminiAPI(prompt) {
   // TODO: INSERIR API KEY AQUI
   const API_KEY = 'AIzaSyBK8NrCB9TyCq4FCN4lavPrNf0dvSTMGZc';
-  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+  const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${API_KEY}`;
   if (!API_KEY) {
     throw new Error('API Key não configurada. Abra app.js, localize "TODO: INSERIR API KEY AQUI" e insira sua chave gratuita do Google AI Studio.');
   }
@@ -508,11 +534,21 @@ function buildPromptOrcamento(b, accentColor, logoSrc, hasLogo) {
   const tone = total < 1500 ? 'Tom direto, simples e amigável, sem burocracia.' : 'Tom executivo, formal e preciso.';
   return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Gerente Financeiro especializado em produção audiovisual.
   
-REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
+REGRA DE OURO: Não retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas differentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
 
 REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
 
-CLIENTE: ${b.client} | PAGAMENTO: ${b.pagamento} | VALIDADE: ${b.validade}
+RAIO-X DO PROJETO:
+- Cliente: ${b.client} (${b.tamanho || 'Não informado'})
+- Local: ${b.local || 'Não informado'}
+- Tipo de Projeto: ${b.tipo || 'Não informado'}
+- Diárias: ${b.diarias || 'Não informado'}
+- Estilo/Equipamento: ${b.estilo || 'Não informado'}
+- Pós-Produção: ${b.pos || 'Não informado'}
+- Prazo: ${b.prazo || 'Não informado'}
+- Verba Estimada: ${b.verba || 'Não informada'}
+- Pagamento: ${b.pagamento} | Validade: ${b.validade}
+
 ITENS FORNECIDOS:
 ${itemsText}
 TOTAL CALCULADO: ${totalFmt}
@@ -525,7 +561,7 @@ Retorne APENAS HTML limpo (sem tags <html>, <head> ou <body> externas, apenas o 
 function buildPromptProposta(b, accentColor, logoSrc, hasLogo) {
   return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Diretor Criativo especializado em produção audiovisual.
   
-REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. Crie uma 'Capa' ocupando a primeira página com a logo centralizada e o título em destaque. ${hasLogo ? `URL DA LOGO: ${logoSrc}` : ''}
+REGRA DE OURO: Não retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. Crie uma 'Capa' ocupando a primeira página com a logo centralizada e o título em destaque. ${hasLogo ? `URL DA LOGO: ${logoSrc}` : ''}
 
 REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
 
@@ -544,7 +580,7 @@ function buildPromptContrato(b, accentColor, logoSrc, hasLogo) {
   const tone = valorNum > 5000 ? 'Linguagem jurídica estritamente formal e executiva.' : 'Linguagem jurídica clara e acessível.';
   return `[PERSONA]: Atue como um UI/UX Designer de apresentações de alto nível e Advogado especialista em Direitos Autorais no Brasil.
   
-REGRA DE OURO: No retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
+REGRA DE OURO: Não retorne apenas texto. Retorne a estrutura completa do documento em HTML, utilizando Estilos Inline (style="") para criar um design único para cada projeto. Use conceitos de design editorial: tipografia variada, grids assimétricos, e blocos de cor modernos. Use fontes do Google Fonts (como Montserrat ou Playfair Display) importando via @import. Use a 'Cor Primária' (${accentColor}) para criar elementos de destaque (bordas finas, backgrounds de botões ou ícones). Crie seções com alturas diferentes para parecer um 'Pitch Deck' de cinema. ${hasLogo ? `Inclua a logo da produtora usando esta URL de imagem: ${logoSrc}` : ''}
 
 REGRA ESTRUTURAL VITAL: Estruture o layout em blocos independentes usando a tag <section class='pdf-bloco'>. Cada seção deve conter um único assunto e não deve ser excessivamente longa para caber dentro de uma altura A4. Mantenha a estética premium, mas o código deve ser modular.
 
@@ -574,6 +610,14 @@ async function gerarDocumentoAudiovisual(e) {
   if (currentDoc === 'orcamento') {
     b = {
       client: document.getElementById('o-client')?.value?.trim() || '',
+      tamanho: document.getElementById('o-tamanho')?.value,
+      local: document.getElementById('o-local')?.value?.trim() || '',
+      tipo: document.getElementById('o-tipo')?.value,
+      diarias: document.getElementById('o-diarias')?.value?.trim() || '',
+      estilo: document.getElementById('o-estilo')?.value,
+      pos: document.getElementById('o-pos')?.value?.trim() || '',
+      prazo: document.getElementById('o-prazo')?.value?.trim() || '',
+      verba: document.getElementById('o-verba')?.value?.trim() || '',
       pagamento: document.getElementById('o-pagamento')?.value,
       validade: document.getElementById('o-validade')?.value,
       items: orcamentoItems.filter(it => it.desc.trim()),
